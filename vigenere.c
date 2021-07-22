@@ -4,24 +4,58 @@
 #include "function.h"
 
 int main() {
-    char message[9999];
-    printf("\nEnter a message to encrypt: ");
-    gets(message);
+    int num;
+    printf("Choose: \n1. Encrypt 2. Decrypt: ");
+    scanf("%d", &num);
 
-    char keyword[100];
-    printf("\nEnter a keyword: ");
-    scanf("%s", keyword);
+    int ch;
+    while ((ch = getchar()) != '\n' && ch != EOF);
 
     char** table = load_table();
 
-    char *cyphertext = encrypt(message, keyword, table);
+    char message[9999];
+    char keyword[100];
 
-    printf("\nThis encrypted message is: ");
-    for(int i = 0; i < strlen(message); i++) {
-        printf("%c", cyphertext[i]);
+    char* cyphertext = NULL;
+
+
+    switch(num) {
+        case 1:
+            printf("\nEnter a message to encrypt: ");
+            fgets(message, 9999, stdin);
+
+            printf("\nEnter a keyword: ");
+            scanf("%s", keyword);
+
+            cyphertext = encrypt(message, keyword, table);
+
+            printf("\nThis encrypted message is: ");
+            printf("%s", cyphertext);
+
+            free_aloc(cyphertext, table);
+            break;
+
+        case 2:
+            printf("\nEnter a message to decrypt: ");
+            fgets(message, 9999, stdin);
+
+            printf("\nEnter a keyword: ");
+            scanf("%s", keyword);
+
+            cyphertext = decrypt(message, keyword, table);
+
+            printf("\nThis encrypted message is: ");
+            printf("%s", cyphertext);
+
+            free_aloc(cyphertext, table);
+
+            break;
+
+        default:
+            printf("Invalid number!");
+            break;
     }
-
-    free_aloc(cyphertext, table);
-
+    
+        
     return 0;
 }

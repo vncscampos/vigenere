@@ -5,7 +5,7 @@
 #include "function.h"
 
 char* encrypt(char* message, char* keyword, char** table) {
-    int message_size = strlen(message);
+    int message_size = strlen(message) - 1;
     int keyword_size = strlen(keyword);
 
 
@@ -19,6 +19,7 @@ char* encrypt(char* message, char* keyword, char** table) {
 
     char* cyphertext = (char*)malloc(message_size*sizeof(char));
     int count = 0;
+
 
     for(int i = 0; i < message_size; i++) {
 
@@ -51,7 +52,62 @@ char* encrypt(char* message, char* keyword, char** table) {
         }
     }
 
+    cyphertext[strlen(message)] = '\0';
+
     return cyphertext;
+}
+
+char* decrypt(char* message, char* keyword, char** table) {
+    int message_size = strlen(message) - 1;
+    int keyword_size = strlen(keyword);
+
+
+    for(int i = 0; i < message_size; i++) {
+        message[i] = toupper(message[i]);
+    }
+
+    for(int i = 0; i < keyword_size; i++) {
+        keyword[i] = toupper(keyword[i]);
+    }
+
+    char* cyphertext = (char*)malloc(message_size*sizeof(char));
+
+    int count = 0;
+    for(int i = 0; i < message_size; i++) {
+
+        int line, column;
+
+        if(count >= keyword_size) {
+            count = 0;
+        }
+
+        char ch1 = keyword[count];
+        
+        if(message[i] != ' ') {
+            for(int j = 1; j < 27; j++) {
+                if(ch1 == table[j][0]) {
+                    line = j;
+                }
+            }
+
+            char ch2 = message[i];
+
+            for(int j = 1; j < 27; j++) {
+                if(ch2 == table[line][j]) {
+                    column = j;
+                }
+            }
+            cyphertext[i] = table[0][column];
+            count++;
+        } else {
+            cyphertext[i] = ' ';
+        }
+    }
+
+    cyphertext[strlen(message)] = '\0';
+
+    return cyphertext;
+
 }
 
 char** load_table() {
